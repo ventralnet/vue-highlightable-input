@@ -42,6 +42,10 @@ export default {
     fireOnEnabled: {
       type: Boolean,
       default: true
+    },
+    isMultiLine: {
+      type: Boolean,
+      default: true,
     }
   },
   data() { 
