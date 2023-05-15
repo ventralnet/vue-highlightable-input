@@ -39,7 +39,7 @@ export default {
       type: String,
       default: 'keydown'
     },
-    fireOnEnabled : {
+    fireOnEnabled: {
       type: Boolean,
       default: true
     }
