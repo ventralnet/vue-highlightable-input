@@ -1,21 +1,21 @@
 <template>
     <v-app style="margin:30px">
-      <v-container fluid .mx-auto>
+      <v-container fluid mx-auto>
           <img height="160px" width="250px" src="../assets/logo.png">
 
           <h3> Highlight and style specific words as you're typing. </h3>
-          
-          <highlightable-input 
+
+          <highlightable-input
             align="left"
-            class="myinput" 
+            class="myinput"
             data-placeholder="Try typing any of the words below like hacker news or @Soup"
-            :highlight-style="defaultStyle" 
-            :highlight-enabled="highlightEnabled" 
-            :highlight="highlight" 
+            :highlight-style="defaultStyle"
+            :highlight-enabled="highlightEnabled"
+            :highlight="highlight"
             :caseSensitive="caseEnabled"
             v-model="msg"
           />
-          
+
           <label> Raw Text: </label>
           <br><br>
           <label>{{msg}} </label>
@@ -27,7 +27,7 @@
           <label>
             <input type="checkbox" v-model="highlightEnabled"> Highlight
           </label>
-          
+
           <label>
             <input type="checkbox" v-model="caseEnabled"> Case Sensitive (Global)
           </label>
@@ -53,9 +53,6 @@
 
 <script>
 import HighlightableInput from "../../../src/HighlightableInput"
-import Vuetify from 'vuetify'
-import Vue from 'vue'
-Vue.use(Vuetify)
 
 export default {
   name: 'HelloWorld',
@@ -75,7 +72,7 @@ export default {
         "whatever",
         {start:0, end:1, style:"border: 3px solid #AAAD21;"},
         {start:3, end:5, style:"border: 2px solid #73AD21;"},
-        {text: /[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}/img, style:"color: white; background-color:#aa2313"}, // Phone number regex
+        {text: /[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}/img, style:"color: white; background-color:#aa2313"}, // Phone number regex
         { text: /{{\w+}}/gm, style: 'color: green;' },
         { text: /{{.*?}}/gm, style: 'color: red' },
         { text: /{{\w+/gm, style: 'color: green' },
@@ -87,7 +84,7 @@ export default {
   },
   methods: {
     handleNewHighlights () {
-        // Ugly hack because chrome is stupid 
+        // Ugly hack because chrome is stupid
         // https://stackoverflow.com/questions/26962323/what-is-this-insane-space-character-google-chrome
         var h = this.customHighlight.replace(new RegExp(String.fromCharCode(32),"g"),String.fromCharCode(160));
         if (h.length > 0)
