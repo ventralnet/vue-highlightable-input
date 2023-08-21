@@ -1,3 +1,11 @@
+# !!!! This is a fork for SyedWasihaider/vue-highlightable-input I have modified to support Vue3 !!!!  
+
+To install be sure to 
+
+```sh
+npm install @ventralnet/vue-highlightable-input --save
+```
+
 ![icon](https://github.com/SyedWasiHaider/vue-highlightable-input/blob/master/doc/icon.png)
 [![npm version](https://badge.fury.io/js/vue-highlightable-input.svg)](https://badge.fury.io/js/vue-highlightable-input)
 
@@ -10,7 +18,7 @@ Highlight and style specific words as you're typing.
 # Install
 
 ```sh
-npm install vue-highlightable-input --save
+npm install @ventralnet/vue-highlightable-input --save
 ```
 
 # Usage
