@@ -359,7 +359,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 div {
-  height: 50px;
+  height: 1.5em;
 }
-
 </style>
