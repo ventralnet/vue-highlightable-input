@@ -1,4 +1,6 @@
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+import { openBlock, createElementBlock } from 'vue';
+
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 function unwrapExports (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -8,55 +10,51 @@ function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
+//
+
 var shallowequal = function shallowEqual(objA, objB, compare, compareContext) {
+  var ret = compare ? compare.call(compareContext, objA, objB) : void 0;
 
-    var ret = compare ? compare.call(compareContext, objA, objB) : void 0;
+  if (ret !== void 0) {
+    return !!ret;
+  }
 
-    if(ret !== void 0) {
-        return !!ret;
-    }
-
-    if(objA === objB) {
-        return true;
-    }
-
-    if(typeof objA !== 'object' || !objA ||
-       typeof objB !== 'object' || !objB) {
-        return false;
-    }
-
-    var keysA = Object.keys(objA);
-    var keysB = Object.keys(objB);
-
-    if(keysA.length !== keysB.length) {
-        return false;
-    }
-
-    var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
-
-    // Test for A's keys different from B.
-    for(var idx = 0; idx < keysA.length; idx++) {
-
-        var key = keysA[idx];
-
-        if(!bHasOwnProperty(key)) {
-            return false;
-        }
-
-        var valueA = objA[key];
-        var valueB = objB[key];
-
-        ret = compare ? compare.call(compareContext, valueA, valueB, key) : void 0;
-
-        if(ret === false ||
-           ret === void 0 && valueA !== valueB) {
-            return false;
-        }
-
-    }
-
+  if (objA === objB) {
     return true;
+  }
 
+  if (typeof objA !== "object" || !objA || typeof objB !== "object" || !objB) {
+    return false;
+  }
+
+  var keysA = Object.keys(objA);
+  var keysB = Object.keys(objB);
+
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+
+  var bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB);
+
+  // Test for A's keys different from B.
+  for (var idx = 0; idx < keysA.length; idx++) {
+    var key = keysA[idx];
+
+    if (!bHasOwnProperty(key)) {
+      return false;
+    }
+
+    var valueA = objA[key];
+    var valueB = objB[key];
+
+    ret = compare ? compare.call(compareContext, valueA, valueB, key) : void 0;
+
+    if (ret === false || (ret === void 0 && valueA !== valueB)) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 var lib = createCommonjsModule(function (module, exports) {
@@ -770,10 +768,10 @@ if (typeof Symbol === 'function') {
 });
 
 var IntervalTree = unwrapExports(lib);
-var lib_1 = lib.Node;
-var lib_2 = lib.IntervalTree;
-var lib_3 = lib.InOrder;
-var lib_4 = lib.PreOrder;
+lib.Node;
+lib.IntervalTree;
+lib.InOrder;
+lib.PreOrder;
 
 /**
  * Checks if `value` is the
@@ -842,26 +840,64 @@ var now = function() {
 
 var now_1 = now;
 
+/** Used to match a single whitespace character. */
+var reWhitespace = /\s/;
+
+/**
+ * Used by `_.trim` and `_.trimEnd` to get the index of the last non-whitespace
+ * character of `string`.
+ *
+ * @private
+ * @param {string} string The string to inspect.
+ * @returns {number} Returns the index of the last non-whitespace character.
+ */
+function trimmedEndIndex(string) {
+  var index = string.length;
+
+  while (index-- && reWhitespace.test(string.charAt(index))) {}
+  return index;
+}
+
+var _trimmedEndIndex = trimmedEndIndex;
+
+/** Used to match leading whitespace. */
+var reTrimStart = /^\s+/;
+
+/**
+ * The base implementation of `_.trim`.
+ *
+ * @private
+ * @param {string} string The string to trim.
+ * @returns {string} Returns the trimmed string.
+ */
+function baseTrim(string) {
+  return string
+    ? string.slice(0, _trimmedEndIndex(string) + 1).replace(reTrimStart, '')
+    : string;
+}
+
+var _baseTrim = baseTrim;
+
 /** Built-in value references. */
 var Symbol$1 = _root.Symbol;
 
 var _Symbol = Symbol$1;
 
 /** Used for built-in method references. */
-var objectProto = Object.prototype;
+var objectProto$1 = Object.prototype;
 
 /** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
+var hasOwnProperty = objectProto$1.hasOwnProperty;
 
 /**
  * Used to resolve the
  * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
  * of values.
  */
-var nativeObjectToString = objectProto.toString;
+var nativeObjectToString$1 = objectProto$1.toString;
 
 /** Built-in value references. */
-var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
 
 /**
  * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
@@ -871,20 +907,20 @@ var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
  * @returns {string} Returns the raw `toStringTag`.
  */
 function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
+  var isOwn = hasOwnProperty.call(value, symToStringTag$1),
+      tag = value[symToStringTag$1];
 
   try {
-    value[symToStringTag] = undefined;
+    value[symToStringTag$1] = undefined;
     var unmasked = true;
   } catch (e) {}
 
-  var result = nativeObjectToString.call(value);
+  var result = nativeObjectToString$1.call(value);
   if (unmasked) {
     if (isOwn) {
-      value[symToStringTag] = tag;
+      value[symToStringTag$1] = tag;
     } else {
-      delete value[symToStringTag];
+      delete value[symToStringTag$1];
     }
   }
   return result;
@@ -893,14 +929,14 @@ function getRawTag(value) {
 var _getRawTag = getRawTag;
 
 /** Used for built-in method references. */
-var objectProto$1 = Object.prototype;
+var objectProto = Object.prototype;
 
 /**
  * Used to resolve the
  * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
  * of values.
  */
-var nativeObjectToString$1 = objectProto$1.toString;
+var nativeObjectToString = objectProto.toString;
 
 /**
  * Converts `value` to a string using `Object.prototype.toString`.
@@ -910,7 +946,7 @@ var nativeObjectToString$1 = objectProto$1.toString;
  * @returns {string} Returns the converted string.
  */
 function objectToString(value) {
-  return nativeObjectToString$1.call(value);
+  return nativeObjectToString.call(value);
 }
 
 var _objectToString = objectToString;
@@ -920,7 +956,7 @@ var nullTag = '[object Null]',
     undefinedTag = '[object Undefined]';
 
 /** Built-in value references. */
-var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
+var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
 
 /**
  * The base implementation of `getTag` without fallbacks for buggy environments.
@@ -933,7 +969,7 @@ function baseGetTag(value) {
   if (value == null) {
     return value === undefined ? undefinedTag : nullTag;
   }
-  return (symToStringTag$1 && symToStringTag$1 in Object(value))
+  return (symToStringTag && symToStringTag in Object(value))
     ? _getRawTag(value)
     : _objectToString(value);
 }
@@ -1000,9 +1036,6 @@ var isSymbol_1 = isSymbol;
 /** Used as references for various `Number` constants. */
 var NAN = 0 / 0;
 
-/** Used to match leading and trailing whitespace. */
-var reTrim = /^\s+|\s+$/g;
-
 /** Used to detect bad signed hexadecimal string values. */
 var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
 
@@ -1052,7 +1085,7 @@ function toNumber(value) {
   if (typeof value != 'string') {
     return value === 0 ? value : +value;
   }
-  value = value.replace(reTrim, '');
+  value = _baseTrim(value);
   var isBinary = reIsBinary.test(value);
   return (isBinary || reIsOctal.test(value))
     ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
@@ -1232,6 +1265,7 @@ function debounce(func, wait, options) {
       }
       if (maxing) {
         // Handle invocations in a tight loop.
+        clearTimeout(timerId);
         timerId = setTimeout(timerExpired, wait);
         return invokeFunc(lastCallTime);
       }
@@ -1277,10 +1311,10 @@ var tagsToReplace = {
     '>': '&gt;'
 };
 
-var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"contenteditable":"true"}})},staticRenderFns: [],_scopeId: 'data-v-7f284282',
+var script = {
   props: {
     highlight: Array,
-    value: String,
+    modelValue: String,
     highlightStyle: {
       type : [String, Object],
       default:  'background-color:yellow'
@@ -1306,17 +1340,17 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
       default: true
     }
   },
-  data() { 
+  data() {
     return {
       internalValue: '',
       htmlOutput: '',
       debouncedHandler: null
-    } 
+    }
   },
   mounted () {
       if (this.fireOnEnabled)
         this.$el.addEventListener(this.fireOn, this.handleChange);
-      this.internalValue = this.value;
+      this.internalValue = this.modelValue;
       this.processHighlights();
   },
 
@@ -1331,8 +1365,8 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
     },
 
     value() {
-      if (this.internalValue != this.value){
-        this.internalValue = this.value;
+      if (this.internalValue != this.modelValue){
+        this.internalValue = this.modelValue;
         this.processHighlights();
       }
     },
@@ -1351,7 +1385,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
       this.restoreSelection(this.$el, selection);
     }
   },
-  
+
   methods: {
 
     handleChange() {
@@ -1369,7 +1403,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
         if (!this.highlightEnabled)
         {
           this.htmlOutput = this.internalValue;
-          this.$emit('input', this.internalValue);
+          this.$emit('update:modelValue', this.internalValue);
           return;
         }
 
@@ -1379,7 +1413,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
         var sortedHighlights = this.normalizedHighlights();
         if (!sortedHighlights)
           return;
-        
+
         for (var i = 0; i < sortedHighlights.length; i++){
           var highlightObj = sortedHighlights[i];
 
@@ -1388,7 +1422,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
           {
             if (typeof(highlightObj.text) == "string"){
               indices = this.getIndicesOf(highlightObj.text, this.internalValue, isUndefined_1(highlightObj.caseSensitive) ? this.caseSensitive : highlightObj.caseSensitive);
-              indices.forEach(start => 
+              indices.forEach(start =>
               {
                 var end = start+highlightObj.text.length - 1;
                 this.insertRange(start, end, highlightObj, intervalTree);
@@ -1397,7 +1431,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
 
             if (Object.prototype.toString.call(highlightObj.text) === '[object RegExp]'){
               indices = this.getRegexIndices(highlightObj.text, this.internalValue);
-              indices.forEach(pair => 
+              indices.forEach(pair =>
               {
                 this.insertRange(pair.start, pair.end, highlightObj, intervalTree);
               });
@@ -1411,7 +1445,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
             this.insertRange(start, end, highlightObj, intervalTree);
           }
         }
-        
+
         highlightPositions = intervalTree.search(0, this.internalValue.length);
         highlightPositions = highlightPositions.sort((a,b) => a.start-b.start);
 
@@ -1436,7 +1470,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
         }
 
         this.htmlOutput = result;
-        this.$emit('input', this.internalValue);
+        this.$emit('update:modelValue', this.internalValue);
     },
 
     insertRange(start, end, highlightObj, intervalTree){
@@ -1460,11 +1494,11 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
 
       if (Object.prototype.toString.call(this.highlight) === '[object RegExp]' || typeof(this.highlight) == "string")
         return [{text: this.highlight}]
-      
+
       if (Object.prototype.toString.call(this.highlight) === '[object Array]' && this.highlight.length > 0){
 
         var globalDefaultStyle = typeof(this.highlightStyle) == 'string' ? this.highlightStyle : (Object.keys(this.highlightStyle).map(key => key + ':' + this.highlightStyle[key]).join(';') + ';');
-        
+
         var regExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) === '[object RegExp]');
         var nonRegExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) !== '[object RegExp]');
         return nonRegExpHighlights.map(h => {
@@ -1485,7 +1519,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
           else {
             console.error("Please provide a valid highlight object or string");
           }
-        }).sort((a,b) => (a.text && b.text) ? a.text > b.text : ((a.start == b.start ? (a.end < b.end) : (a.start < b.start)))).concat(regExpHighlights) 
+        }).sort((a,b) => (a.text && b.text) ? a.text > b.text : ((a.start == b.start ? (a.end < b.end) : (a.start < b.start)))).concat(regExpHighlights)
         // We sort here in ascending order because we want to find highlights for the smaller strings first
         // and then override them later with any overlapping larger strings. So for example:
         // if we have highlights: g and gg and the string "sup gg" should have only "gg" highlighted.
@@ -1510,7 +1544,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
           console.error("Expected " + regex + " to be global");
           return []
         }
-        
+
         regex = RegExp(regex);
         var indices = [];
         var match = null;
@@ -1538,7 +1572,7 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
         }
         return indices;
     },
-    
+
     // Copied but modifed slightly from: https://stackoverflow.com/questions/14636218/jquery-convert-text-url-to-link-as-typing/14637351#14637351
     saveSelection(containerEl){
        var start;
@@ -1615,6 +1649,16 @@ var HighlightableInput = {render: function(){var _vm=this;var _h=_vm.$createElem
           }
       }
     }
+};
+
+const _hoisted_1 = { contenteditable: "true" };
+
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (openBlock(), createElementBlock("div", _hoisted_1))
 }
 
-export default HighlightableInput;
+script.render = render;
+script.__scopeId = "data-v-74705215";
+script.__file = "src/HighlightableInput.vue";
+
+export { script as default };
