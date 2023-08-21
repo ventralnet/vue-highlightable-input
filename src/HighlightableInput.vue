@@ -18,7 +18,7 @@ import isUndefined from 'lodash/isUndefined'
 export default {
   props: {
     highlight: Array,
-    value: String,
+    modelValue: String,
     highlightStyle: {
       type : [String, Object],
       default:  'background-color:yellow'
@@ -44,17 +44,17 @@ export default {
       default: true
     }
   },
-  data() { 
+  data() {
     return {
       internalValue: '',
       htmlOutput: '',
       debouncedHandler: null
-    } 
+    }
   },
   mounted () {
       if (this.fireOnEnabled)
         this.$el.addEventListener(this.fireOn, this.handleChange)
-      this.internalValue = this.value
+      this.internalValue = this.modelValue
       this.processHighlights()
   },
 
@@ -69,8 +69,8 @@ export default {
     },
 
     value() {
-      if (this.internalValue != this.value){
-        this.internalValue = this.value
+      if (this.internalValue != this.modelValue){
+        this.internalValue = this.modelValue
         this.processHighlights()
       }
     },
@@ -89,7 +89,7 @@ export default {
       this.restoreSelection(this.$el, selection)
     }
   },
-  
+
   methods: {
 
     handleChange() {
@@ -107,7 +107,7 @@ export default {
         if (!this.highlightEnabled)
         {
           this.htmlOutput = this.internalValue;
-          this.$emit('input', this.internalValue)
+          this.$emit('update:modelValue', this.internalValue)
           return;
         }
 
@@ -117,7 +117,7 @@ export default {
         var sortedHighlights = this.normalizedHighlights();
         if (!sortedHighlights)
           return;
-        
+
         for (var i = 0; i < sortedHighlights.length; i++){
           var highlightObj = sortedHighlights[i]
 
@@ -126,7 +126,7 @@ export default {
           {
             if (typeof(highlightObj.text) == "string"){
               indices = this.getIndicesOf(highlightObj.text, this.internalValue, isUndefined(highlightObj.caseSensitive) ? this.caseSensitive : highlightObj.caseSensitive)
-              indices.forEach(start => 
+              indices.forEach(start =>
               {
                 var end = start+highlightObj.text.length - 1;
                 this.insertRange(start, end, highlightObj, intervalTree)
@@ -135,7 +135,7 @@ export default {
 
             if (Object.prototype.toString.call(highlightObj.text) === '[object RegExp]'){
               indices = this.getRegexIndices(highlightObj.text, this.internalValue)
-              indices.forEach(pair => 
+              indices.forEach(pair =>
               {
                 this.insertRange(pair.start, pair.end, highlightObj, intervalTree)
               })
@@ -149,7 +149,7 @@ export default {
             this.insertRange(start, end, highlightObj, intervalTree)
           }
         }
-        
+
         highlightPositions = intervalTree.search(0, this.internalValue.length)
         highlightPositions = highlightPositions.sort((a,b) => a.start-b.start)
 
@@ -174,7 +174,7 @@ export default {
         }
 
         this.htmlOutput = result
-        this.$emit('input', this.internalValue)
+        this.$emit('update:modelValue', this.internalValue)
     },
 
     insertRange(start, end, highlightObj, intervalTree){
@@ -198,11 +198,11 @@ export default {
 
       if (Object.prototype.toString.call(this.highlight) === '[object RegExp]' || typeof(this.highlight) == "string")
         return [{text: this.highlight}]
-      
+
       if (Object.prototype.toString.call(this.highlight) === '[object Array]' && this.highlight.length > 0){
 
         var globalDefaultStyle = typeof(this.highlightStyle) == 'string' ? this.highlightStyle : (Object.keys(this.highlightStyle).map(key => key + ':' + this.highlightStyle[key]).join(';') + ';')
-        
+
         var regExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) === '[object RegExp]')
         var nonRegExpHighlights = this.highlight.filter(x => x == Object.prototype.toString.call(x) !== '[object RegExp]')
         return nonRegExpHighlights.map(h => {
@@ -223,7 +223,7 @@ export default {
           else {
             console.error("Please provide a valid highlight object or string")
           }
-        }).sort((a,b) => (a.text && b.text) ? a.text > b.text : ((a.start == b.start ? (a.end < b.end) : (a.start < b.start)))).concat(regExpHighlights) 
+        }).sort((a,b) => (a.text && b.text) ? a.text > b.text : ((a.start == b.start ? (a.end < b.end) : (a.start < b.start)))).concat(regExpHighlights)
         // We sort here in ascending order because we want to find highlights for the smaller strings first
         // and then override them later with any overlapping larger strings. So for example:
         // if we have highlights: g and gg and the string "sup gg" should have only "gg" highlighted.
@@ -248,7 +248,7 @@ export default {
           console.error("Expected " + regex + " to be global")
           return []
         }
-        
+
         regex = RegExp(regex)
         var indices = [];
         var match = null;
@@ -276,7 +276,7 @@ export default {
         }
         return indices;
     },
-    
+
     // Copied but modifed slightly from: https://stackoverflow.com/questions/14636218/jquery-convert-text-url-to-link-as-typing/14637351#14637351
     saveSelection(containerEl){
        var start;
