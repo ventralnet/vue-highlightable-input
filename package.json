@@ -1,6 +1,7 @@
 {
     "name": "@ventralnet/vue-highlightable-input",
     "version": "1.0.9",
+    "private": false,
     "description": "A Vue.js component that highlights text as you type",
     "main": "./dist/vue-highlightable-input.js",
     "type": "module",
@@ -12,9 +13,12 @@
     },
     "author": "Wasi Haider",
     "license": "MIT",
+    "publishConfig": {
+        "access": "public"
+    },
     "repository": {
         "type": "git",
-        "url": "https://github.com/ventralnet/vue-highlightable-input"
+        "url": "git+https://github.com/ventralnet/vue-highlightable-input.git"
     },
     "devDependencies": {
         "rimraf": "^5.0.1",
